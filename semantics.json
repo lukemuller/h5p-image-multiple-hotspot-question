@@ -34,7 +34,7 @@
         "type": "group",
         "label": "Hotspots",
         "importance": "high",
-        "widget": "imageHotspotQuestion",
+        "widget": "imageMultipleHotspotQuestion",
         "description": "Choose appropriate figure for your hotspot, configure it, then drag and resize it into place.",
         "fields": [
           {
