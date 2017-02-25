@@ -158,8 +158,11 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
 
     this.attachHotspots();
     this.initImageClickListener();
-
-    if (this.hotspotSettings.numberHotspots) {
+     
+    /** Check if user has set number of correct hotspots needed, if number of hotspots
+    * needed is greater than number of hotspots in image, default to hotspots length.
+    */
+    if (this.hotspotSettings.numberHotspots && this.hotspotSettings.numberHotspots <= this.$hotspots.length) {
       this.maxScore = this.hotspotSettings.numberHotspots;
     } else {
       this.maxScore = this.$hotspots.length;
