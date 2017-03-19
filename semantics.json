@@ -58,7 +58,7 @@
             "type": "number",
             "label": "Number of correct hotspots that need to be found for question completion",
             "importance": "high",
-            "description": "If left blank, will default to the number of hotspots created.",
+            "description": "If left blank, will default to the number of correct hotspots created.",
             "optional": true
           },
           {

@@ -73,6 +73,7 @@
   color: #c33f62;
   font-size: 16px;
   visibility: hidden;
+  pointer-events: none;
 }
 
 .h5p-image-hotspot-question .hotspot-feedback:before {

@@ -80,7 +80,7 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
      this.correctHotspotFeedback = [];
 
     /**
-     * Keeps track of all hotspots in an array.
+     * Keeps track of all correct hotspots in an array.
      * @type {Array}
      */
      this.$hotspots = [];
@@ -158,7 +158,7 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
 
     this.attachHotspots();
     this.initImageClickListener();
-     
+
     /** Check if user has set number of correct hotspots needed, if number of hotspots
     * needed is greater than number of hotspots in image, default to hotspots length.
     */
@@ -177,8 +177,26 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
     var self = this;
 
     this.$imageWrapper.click(function (mouseEvent) {
-      // Create new hotspot feedback
-      self.createHotspotFeedback($(this), mouseEvent);
+      if($(mouseEvent.target).is('.correct, .already-selected, .incorrect')) {
+        $(".image-hotspot").each(function() {
+          // check if clicked point (taken from event) is inside element
+          var mouseX = mouseEvent.pageX;
+          var mouseY = mouseEvent.pageY;
+          var offset = $(this).offset();
+          var width = $(this).width();
+          var height = $(this).height();
+
+          if (mouseX > offset.left && mouseX < offset.left+width && mouseY > offset.top && mouseY < offset.top+height) {
+            var e = new jQuery.Event("click");
+            e.pageX = mouseX;
+            e.pageY = mouseY;
+            $(this).trigger(e); // force click event
+          }
+        });
+      } else {
+        // Create new hotspot feedback
+        self.createHotspotFeedback($(this), mouseEvent);
+      }
     });
   };
 
@@ -216,7 +234,9 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
 
     }).appendTo(this.$imageWrapper);
 
-    this.$hotspots.push($hotspot);
+    if (hotspot.userSettings.correct) {
+      this.$hotspots.push($hotspot);
+    }
   };
 
   /**
@@ -248,9 +268,17 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
 
     this.hotspotFeedback.hotspotChosen = true;
 
-    // Center hotspot feedback on mouse click with fallback for firefox
-    var feedbackPosX = (mouseEvent.offsetX || mouseEvent.pageX - $(mouseEvent.target).offset().left);
-    var feedbackPosY = (mouseEvent.offsetY || mouseEvent.pageY - $(mouseEvent.target).offset().top);
+    var feedbackPosX;
+    var feedbackPosY;
+
+    if($(mouseEvent.target).hasClass('hotspot-feedback')) {
+      feedbackPosX = mouseEvent.pageX - $(mouseEvent.currentTarget).offset().left;
+      feedbackPosY = mouseEvent.pageY - $(mouseEvent.currentTarget).offset().top;
+    } else {
+      // Center hotspot feedback on mouse click with fallback for firefox
+      feedbackPosX = (mouseEvent.offsetX || mouseEvent.pageX - $(mouseEvent.target).offset().left);
+      feedbackPosY = (mouseEvent.offsetY || mouseEvent.pageY - $(mouseEvent.target).offset().top);
+    }
 
     // Apply clicked element offset if click was not in wrapper
     if (!$clickedElement.hasClass('image-wrapper')) {
@@ -282,6 +310,10 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
     } else if (hotspot && hotspot.userSettings.selected) {
       this.hotspotFeedback.$element.addClass('already-selected');
       feedbackText = this.params.imageMultipleHotspotQuestion.hotspotSettings.alreadySelectedFeedback;
+      this.hotspotFeedback.incorrect = true;
+    } else if (hotspot) {
+      this.hotspotFeedback.$element.addClass('incorrect');
+      feedbackText = hotspot.userSettings.feedbackText;
       this.hotspotFeedback.incorrect = true;
     } else {
       feedbackText = this.params.imageMultipleHotspotQuestion.hotspotSettings.noneSelectedFeedback;
