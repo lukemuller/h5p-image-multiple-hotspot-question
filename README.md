@@ -1,3 +1,11 @@
+
+
+PLEASE NOTE THIS REPO IS NO LONGER MAINTAINED AS I DON'T HAVE THE TIME. FEEL FREE TO FORK THIS REPO, AND TAKE OVER.
+==========
+
+
+
+
 H5P Image Multiple Hotspot Question
 ==========
 
