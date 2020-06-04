@@ -1,0 +1,87 @@
+{
+  "semantics": [
+    {
+      "label": "Image Multiple Hotspot Question Editor",
+      "fields": [
+        {
+          "label": "Background image",
+          "fields": [
+            {
+              "label": "The title of this question",
+              "default": "Image hotspot question",
+              "description": "Used in summaries, statistics etc."
+            },
+            {
+              "label": "Background image",
+              "description": "Select an image to use as background the image hotspot question."
+            }
+          ]
+        },
+        {
+          "label": "Hotspots",
+          "description": "Choose appropriate figure for your hotspot, configure it, then drag and resize it into place.",
+          "fields": [
+            {
+              "label": "Task description",
+              "description": "Instructions to the user."
+            },
+            {
+              "label": "Hotspot Name",
+              "description": "Please enter what the user is trying to find i.e. risks, objects, errors (this will be used in feedback statements)."
+            },
+            {
+              "label": "Number of correct hotspots that need to be found for question completion",
+              "description": "If left blank, will default to the number of correct hotspots created."
+            },
+            {
+              "label": "Hotspot",
+              "entity": "Hotspot",
+              "field": {
+                "label": "Hotspot",
+                "fields": [
+                  {
+                    "label": "userSettings",
+                    "fields": [
+                      {
+                        "label": "Correct",
+                        "description": "There can be multiple correct hotspots. The user gets correct/incorrect feedback immediately after each click. The feedback will be displayed in the form of - (Text entered below) (Number of hotspots found) of (Correct hotspots needed) (Hotspot Name entered above)."
+                      },
+                      {
+                        "label": "Feedback",
+                        "placeholder": "Correct, you have found"
+                      }
+                    ]
+                  },
+                  {
+                  }
+                ]
+              }
+            },
+            {
+              "label": "Feedback if the user selects an empty spot:",
+              "placeholder": "You didn't locate any hotspots, try again!"
+            },
+            {
+              "label": "Feedback if the user selects an already found hotspot:",
+              "placeholder": "You have already found this one!"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Hotspot mode",
+      "options": [
+        {
+          "label": "Always visible"
+        },
+        {
+          "label": "Visible on hover"
+        },
+        {
+          "label": "Invisible"
+        }
+      ]
+    }
+  ]
+}
