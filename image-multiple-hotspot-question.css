@@ -2,7 +2,6 @@
 .h5p-image-hotspot-question .image-hotspot {
   position: absolute;
   background-color: rgba(0,0,0,0);
-  box-sizing: border-box;
 }
 
 .h5p-image-hotspot-question .image-hotspot.circle {
@@ -104,24 +103,6 @@
 
 .h5p-image-hotspot-question .hotspot-feedback.already-selected:before {
   content: "\f12a";
-}
-
-/* Hotspot visibility */
-.h5p-image-hotspot-question .visible-always .image-hotspot {
-  display: block;
-  border: 2px dashed #000;
-  cursor: pointer;
-}
-
-.h5p-image-hotspot-question .visible-hover .image-hotspot {
-  transition: border 0.1s linear;
-  border: 2px dashed transparent;
-}
-
-.h5p-image-hotspot-question .visible-hover .image-hotspot:hover {
-  display: block;
-  border: 2px dashed #000;
-  cursor: pointer;
 }
 
 /* Hotspot feedback animation*/

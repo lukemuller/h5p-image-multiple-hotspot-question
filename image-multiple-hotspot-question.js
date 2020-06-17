@@ -127,12 +127,9 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
    ImageMultipleHotspotQuestion.prototype.createContent = function () {
     var self = this;
 
-    const visibilityClass = self.params.hotspotVisibility
-      ? 'visible-' + self.params.hotspotVisibility
-      : 'visible-never';
-    
+
     this.$wrapper = $('<div>', {
-      'class': 'image-hotspot-question ' + this.contentId + ' ' + visibilityClass
+      'class': 'image-hotspot-question ' + this.contentId
     }).ready(function () {
       var imageHeight = self.$wrapper.width() * (self.imageSettings.height / self.imageSettings.width);
       self.$wrapper.css('height', imageHeight + 'px');
