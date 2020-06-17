@@ -150,25 +150,5 @@
         ]
       }
     ]
-  },
-  {
-    "name": "hotspotVisibility",
-    "type": "select",
-    "label": "Hotspot mode",
-    "options": [
-      {
-        "value": "always",
-        "label": "Always visible"
-      },
-      {
-        "value": "hover",
-        "label": "Visible on hover"
-      },
-      {
-        "value": "never",
-        "label": "Invisible"
-      }
-    ],
-    "default": "alwaysVisible"
   }
 ]
