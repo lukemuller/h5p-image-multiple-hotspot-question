@@ -148,19 +148,13 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
     }).appendTo(this.$imageWrapper)
     .addClass('loading');
 
-    this.$imageHotspotsWrapper = $('<ul>', {
-      'class': 'image-hotspots-wrapper',
-      'role': 'group',
-      'aria-label': this.params.imageMultipleHotspotQuestion.hotspotSettings.taskDescription
-    }).appendTo(this.$imageWrapper);
-
     this.$img = $('<img>', {
       'class': 'hotspot-image',
       'src': H5P.getPath(this.imageSettings.path, this.contentId)
     });
 
     // Resize image once loaded
-    this.$img.on('load', function () {
+    this.$img.load(function () {
       $loader.replaceWith(self.$img);
       self.trigger('resize');
     });
@@ -226,24 +220,14 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
    */
    ImageMultipleHotspotQuestion.prototype.attachHotspot = function (hotspot) {
     var self = this;
-
-    var $hotspot = $('<li>', {
-      'tabindex': 0,
-      'role': 'checkbox',
-      'aria-checked': false,
-      'aria-label': hotspot.userSettings.feedbackText,
+    var $hotspot = $('<div>', {
       'class': 'image-hotspot ' + hotspot.computedSettings.figure
     }).css({
       left: hotspot.computedSettings.x + '%',
       top: hotspot.computedSettings.y + '%',
       width: hotspot.computedSettings.width + '%',
       height: hotspot.computedSettings.height + '%'
-    }).on('keydown', function (event) {
-      if (event.keyCode === 32) { // capture space presses
-        event.preventDefault();
-        self.createHotspotFeedback($(this), event, hotspot);
-      }
-    }).on('click', function (mouseEvent) {
+    }).click(function (mouseEvent) {
 
       // Create new hotspot feedback
       self.createHotspotFeedback($(this), mouseEvent, hotspot);
@@ -251,7 +235,7 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
       // Do not propagate
       return false;
 
-    }).appendTo(this.$imageHotspotsWrapper);
+    }).appendTo(this.$imageWrapper);
 
     if (hotspot.userSettings.correct) {
       this.$hotspots.push($hotspot);
@@ -261,10 +245,10 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
   /**
    * Create a feedback element for a click.
    * @param {H5P.jQuery} $clickedElement The element that was clicked, a hotspot or the image wrapper.
-   * @param {Object} event keydown event or click event containing mouse offsets within clicked element.
+   * @param {Object} mouseEvent Mouse event containing mouse offsets within clicked element.
    * @param {Object} hotspot Hotspot parameters.
    */
-   ImageMultipleHotspotQuestion.prototype.createHotspotFeedback = function ($clickedElement, event, hotspot) {
+   ImageMultipleHotspotQuestion.prototype.createHotspotFeedback = function ($clickedElement, mouseEvent, hotspot) {
 
     var feedbackText;
 
@@ -290,25 +274,19 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
     var feedbackPosX;
     var feedbackPosY;
 
-    if (event.type === 'keydown') {
-      feedbackPosX = $clickedElement.position().left + ($clickedElement.width() / 2);
-      feedbackPosY = $clickedElement.position().top + ($clickedElement.height() / 2);
+    if($(mouseEvent.target).hasClass('hotspot-feedback')) {
+      feedbackPosX = mouseEvent.pageX - $(mouseEvent.currentTarget).offset().left;
+      feedbackPosY = mouseEvent.pageY - $(mouseEvent.currentTarget).offset().top;
+    } else {
+      // Center hotspot feedback on mouse click with fallback for firefox
+      feedbackPosX = (mouseEvent.offsetX || mouseEvent.pageX - $(mouseEvent.target).offset().left);
+      feedbackPosY = (mouseEvent.offsetY || mouseEvent.pageY - $(mouseEvent.target).offset().top);
     }
-    else {
-      if($(event.target).hasClass('hotspot-feedback')) {
-        feedbackPosX = event.pageX - $(event.currentTarget).offset().left;
-        feedbackPosY = event.pageY - $(event.currentTarget).offset().top;
-      } else {
-        // Center hotspot feedback on mouse click with fallback for firefox
-        feedbackPosX = (event.offsetX || event.pageX - $(event.target).offset().left);
-        feedbackPosY = (event.offsetY || event.pageY - $(event.target).offset().top);
-      }
-  
-      // Apply clicked element offset if click was not in wrapper
-      if (!$clickedElement.hasClass('image-wrapper')) {
-        feedbackPosX += $clickedElement.position().left;
-        feedbackPosY += $clickedElement.position().top;
-      }
+
+    // Apply clicked element offset if click was not in wrapper
+    if (!$clickedElement.hasClass('image-wrapper')) {
+      feedbackPosX += $clickedElement.position().left;
+      feedbackPosY += $clickedElement.position().top;
     }
 
     // Keep position and pixel offsets for resizing

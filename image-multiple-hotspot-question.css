@@ -16,17 +16,6 @@
   height: 100%;
 }
 
-.h5p-image-hotspot-question .image-wrapper ul.image-hotspots-wrapper {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  list-style-type: none;
-}
-
 .h5p-image-hotspot-question .h5peditor .file img {
   max-width: 500px;
 }
