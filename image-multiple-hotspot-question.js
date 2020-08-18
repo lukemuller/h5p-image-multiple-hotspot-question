@@ -98,10 +98,19 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
     this.on('resize', this.resize);
   }
 
+  /**
+   * Keep track of selected hotspots
+   */
+  this.selectedHotspots = [];
+  
+ 
+
   // Inheritance
   ImageMultipleHotspotQuestion.prototype = Object.create(Question.prototype);
   ImageMultipleHotspotQuestion.prototype.constructor = ImageMultipleHotspotQuestion;
-
+  ImageMultipleHotspotQuestion.prototype.getCurrentState = function () { 
+    return selectedHotspots;
+  } 
   /**
    * Registers this question types DOM elements before they are attached.
    * Called from H5P.Question.
@@ -205,6 +214,7 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
    */
    ImageMultipleHotspotQuestion.prototype.attachHotspots = function () {
     var self = this;
+    this.allHotspots = this.hotspotSettings.hotspot;
     this.hotspotSettings.hotspot.forEach(function (hotspot) {
       self.attachHotspot(hotspot);
     });
@@ -216,6 +226,7 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
    * @param {Object} hotspot Hotspot parameters
    */
    ImageMultipleHotspotQuestion.prototype.attachHotspot = function (hotspot) {
+    const index = this.allHotspots.findIndex(x => x == hotspot); // get index of chosen hotspot
     var self = this;
     var $hotspot = $('<div>', {
       'class': 'image-hotspot ' + hotspot.computedSettings.figure
@@ -225,7 +236,8 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
       width: hotspot.computedSettings.width + '%',
       height: hotspot.computedSettings.height + '%'
     }).click(function (mouseEvent) {
-
+      selectedHotspots.push(index); // add chosen hotspot to selectedHotspots list
+      console.log(selectedHotspots);
       // Create new hotspot feedback
       self.createHotspotFeedback($(this), mouseEvent, hotspot);
 
@@ -251,6 +263,13 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
 
     if (this.hotspotFeedback.$element && this.hotspotFeedback.incorrect) {
       this.hotspotFeedback.$element.remove();
+      // Remove unselected hotspots from the list
+      // const indexOfHotspot = this.allHotspots.findIndex(x => x == hotspot);
+      // const indexToRemove = selectedHotspots.findIndex(x => x == indexOfHotspot) -1;
+      // if (indexToRemove >= -1) {
+      //   selectedHotspots.splice(indexToRemove, 1);
+      // }
+      // console.log(selectedHotspots);
     }
 
     this.hotspotFeedback = {
@@ -408,8 +427,11 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
 
     // Clear feedback
     this.setFeedback();
-  };
 
+    // All hotspots
+    this.allHotspots = [];
+  };
+  
   /**
    * Resize image and wrapper
    */
