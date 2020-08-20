@@ -10,7 +10,7 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
    * @param {number} id Content identification
    * @param {Object} contentData Task specific content data
    */
-   function ImageMultipleHotspotQuestion(params, id, contentData) {
+  function ImageMultipleHotspotQuestion(params, id, contentData) {
     var self = this;
 
     var defaults = {
@@ -36,40 +36,40 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
      * Keeps track of content id.
      * @type {number}
      */
-     this.contentId = id;
+    this.contentId = id;
 
     /**
      * Keeps track of current score.
      * @type {number}
      */
-     this.score = 0;
+    this.score = 0;
 
     /**
      * Keeps track of max score.
      * @type {number}
      */
-     this.maxScore = 1;
+    this.maxScore = 1;
 
     /**
      * Keeps track of parameters
      */
-     this.params = $.extend(true, {}, defaults, params);
+    this.params = $.extend(true, {}, defaults, params);
 
     /**
      * Easier access to image settings.
      */
-     this.imageSettings = this.params.imageMultipleHotspotQuestion.backgroundImageSettings.backgroundImage;
+    this.imageSettings = this.params.imageMultipleHotspotQuestion.backgroundImageSettings.backgroundImage;
 
     /**
      * Easier access to hotspot settings.
      */
-     this.hotspotSettings = this.params.imageMultipleHotspotQuestion.hotspotSettings;
+    this.hotspotSettings = this.params.imageMultipleHotspotQuestion.hotspotSettings;
 
     /**
      * Hotspot feedback object. Contains hotspot feedback specific parameters.
      * @type {Object}
      */
-     this.hotspotFeedback = {
+    this.hotspotFeedback = {
       hotspotChosen: false
     };
 
@@ -77,47 +77,47 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
      * Keeps track of all the selected correct hotspots in an array.
      * @type {Array}
      */
-     this.correctHotspotFeedback = [];
+    this.correctHotspotFeedback = [];
 
     /**
      * Keeps track of all correct hotspots in an array.
      * @type {Array}
      */
-     this.$hotspots = [];
+    this.$hotspots = [];
+
+    /**
+     * Keep track of selected hotspots
+     */
+    this.selectedHotspots = [];
+
+    /**
+     * Hotspots reference
+     */
+    this.allHotspots = this.hotspotSettings.hotspot;
 
     /**
      * Keeps track of the content data. Specifically the previous state.
      * @type {Object}
      */
-     this.contentData = contentData;
+    this.contentData = contentData;
      if (contentData !== undefined && contentData.previousState !== undefined) {
       this.previousState = contentData.previousState;
     }
 
     // Register resize listener with h5p
     this.on('resize', this.resize);
-    
-    this.allHotspots = this.hotspotSettings.hotspot;
   }
 
-  /**
-   * Keep track of selected hotspots
-   */
-  this.selectedHotspots = [];
-  
- 
 
   // Inheritance
   ImageMultipleHotspotQuestion.prototype = Object.create(Question.prototype);
   ImageMultipleHotspotQuestion.prototype.constructor = ImageMultipleHotspotQuestion;
-  ImageMultipleHotspotQuestion.prototype.getCurrentState = function () { 
-    return selectedHotspots;
-  } 
+
   /**
    * Registers this question types DOM elements before they are attached.
    * Called from H5P.Question.
    */
-   ImageMultipleHotspotQuestion.prototype.registerDomElements = function () {
+  ImageMultipleHotspotQuestion.prototype.registerDomElements = function () {
     // Register task introduction text
     if (this.hotspotSettings.taskDescription) {
       this.setIntroduction(this.hotspotSettings.taskDescription);
@@ -128,16 +128,14 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
 
     // Register retry button
     this.createRetryButton();
-
   };
 
   /**
    * Create wrapper and main content for question.
    * @returns {H5P.jQuery} Wrapper
    */
-   ImageMultipleHotspotQuestion.prototype.createContent = function () {
+  ImageMultipleHotspotQuestion.prototype.createContent = function () {
     var self = this;
-
 
     this.$wrapper = $('<div>', {
       'class': 'image-hotspot-question ' + this.contentId
@@ -175,7 +173,8 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
     */
     if (this.hotspotSettings.numberHotspots && this.hotspotSettings.numberHotspots <= this.$hotspots.length) {
       this.maxScore = this.hotspotSettings.numberHotspots;
-    } else {
+    }
+    else {
       this.maxScore = this.$hotspots.length;
     }
     return this.$wrapper;
@@ -184,7 +183,7 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
   /**
    * Initiate image click listener to capture clicks outside of defined hotspots.
    */
-   ImageMultipleHotspotQuestion.prototype.initImageClickListener = function () {
+  ImageMultipleHotspotQuestion.prototype.initImageClickListener = function () {
     var self = this;
 
     this.$imageWrapper.click(function (mouseEvent) {
@@ -204,7 +203,8 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
             $(this).trigger(e); // force click event
           }
         });
-      } else {
+      }
+      else {
         // Create new hotspot feedback
         self.createHotspotFeedback($(this), mouseEvent);
       }
@@ -214,27 +214,18 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
   /**
    * Attaches all hotspots.
    */
-   ImageMultipleHotspotQuestion.prototype.attachHotspots = function () {
+  ImageMultipleHotspotQuestion.prototype.attachHotspots = function () {
     var self = this;
-    this.hotspotSettings.hotspot.forEach(function (hotspot) {
-      self.attachHotspot(hotspot);
+    this.hotspotSettings.hotspot.forEach(function (hotspot, index) {
+      self.attachHotspot(hotspot, index);
     });
-
   };
 
   /**
    * Attach single hotspot.
    * @param {Object} hotspot Hotspot parameters
    */
-   ImageMultipleHotspotQuestion.prototype.attachHotspot = function (hotspot) {
-     var index;
-    // get index of chosen hotspot
-     for (var i = 0; i < this.allHotspots.length; i++){
-      if (this.allHotspots[i] == hotspot) {
-        index = i;
-        break;
-      }
-     }
+  ImageMultipleHotspotQuestion.prototype.attachHotspot = function (hotspot, index) {
     var self = this;
     var $hotspot = $('<div>', {
       'class': 'image-hotspot ' + hotspot.computedSettings.figure
@@ -244,8 +235,8 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
       width: hotspot.computedSettings.width + '%',
       height: hotspot.computedSettings.height + '%'
     }).click(function (mouseEvent) {
-      if (selectedHotspots.indexOf(index) == -1) {
-        selectedHotspots.push(index); // add chosen hotspot to selectedHotspots list
+      if (self.selectedHotspots.indexOf(index) == -1) {
+        self.selectedHotspots.push(index); // add chosen hotspot to selectedHotspots list
       }
      
       // Create new hotspot feedback
@@ -267,7 +258,7 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
    * @param {Object} mouseEvent Mouse event containing mouse offsets within clicked element.
    * @param {Object} hotspot Hotspot parameters.
    */
-   ImageMultipleHotspotQuestion.prototype.createHotspotFeedback = function ($clickedElement, mouseEvent, hotspot) {
+  ImageMultipleHotspotQuestion.prototype.createHotspotFeedback = function ($clickedElement, mouseEvent, hotspot) {
 
     var feedbackText;
 
@@ -296,7 +287,8 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
     if($(mouseEvent.target).hasClass('hotspot-feedback')) {
       feedbackPosX = mouseEvent.pageX - $(mouseEvent.currentTarget).offset().left;
       feedbackPosY = mouseEvent.pageY - $(mouseEvent.currentTarget).offset().top;
-    } else {
+    }
+    else {
       // Center hotspot feedback on mouse click with fallback for firefox
       feedbackPosX = (mouseEvent.offsetX || mouseEvent.pageX - $(mouseEvent.target).offset().left);
       feedbackPosY = (mouseEvent.offsetY || mouseEvent.pageY - $(mouseEvent.target).offset().top);
@@ -329,15 +321,18 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
         }
       }
       this.hotspotFeedback.incorrect = false;
-    } else if (hotspot && hotspot.userSettings.selected) {
+    } 
+    else if (hotspot && hotspot.userSettings.selected) {
       this.hotspotFeedback.$element.addClass('already-selected');
       feedbackText = this.params.imageMultipleHotspotQuestion.hotspotSettings.alreadySelectedFeedback;
       this.hotspotFeedback.incorrect = true;
-    } else if (hotspot) {
+    }
+    else if (hotspot) {
       this.hotspotFeedback.$element.addClass('incorrect');
       feedbackText = hotspot.userSettings.feedbackText;
       this.hotspotFeedback.incorrect = true;
-    } else {
+    }
+    else {
       feedbackText = this.params.imageMultipleHotspotQuestion.hotspotSettings.noneSelectedFeedback;
       this.hotspotFeedback.incorrect = true;
     }
@@ -366,11 +361,19 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
   };
 
   /**
+   * Return the clicked hotspots
+   * @return {array} An array containin the indexes of the clicked hotspots
+   */
+  ImageMultipleHotspotQuestion.prototype.getCurrentState = function () { 
+    return this.selectedHotspots;
+  } 
+
+  /**
    * Checks if an answer for this question has been given.
    * Used in contracts.
    * @returns {boolean}
    */
-   ImageMultipleHotspotQuestion.prototype.getAnswerGiven = function () {
+  ImageMultipleHotspotQuestion.prototype.getAnswerGiven = function () {
     return this.hotspotChosen;
   };
 
@@ -379,7 +382,7 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
    * Used in contracts
    * @returns {number}
    */
-   ImageMultipleHotspotQuestion.prototype.getScore = function () {
+  ImageMultipleHotspotQuestion.prototype.getScore = function () {
     return this.score;
   };
 
@@ -388,7 +391,7 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
    * Used in contracts.
    * @returns {number}
    */
-   ImageMultipleHotspotQuestion.prototype.getMaxScore = function () {
+  ImageMultipleHotspotQuestion.prototype.getMaxScore = function () {
     return this.maxScore;
   };
 
@@ -396,7 +399,7 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
    * Display the first found solution for this question.
    * Used in contracts
    */
-   ImageMultipleHotspotQuestion.prototype.showSolutions = function () {
+  ImageMultipleHotspotQuestion.prototype.showSolutions = function () {
     var self = this;
     var foundSolution = false;
 
@@ -413,7 +416,7 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
    * Resets the question.
    * Used in contracts.
    */
-   ImageMultipleHotspotQuestion.prototype.resetTask = function () {
+  ImageMultipleHotspotQuestion.prototype.resetTask = function () {
     // Remove hotspot feedback
     if (this.hotspotFeedback.$element) {
       this.hotspotFeedback.$element.remove();
@@ -436,7 +439,7 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
   /**
    * Resize image and wrapper
    */
-   ImageMultipleHotspotQuestion.prototype.resize = function () {
+  ImageMultipleHotspotQuestion.prototype.resize = function () {
     this.resizeImage();
     this.resizeHotspotFeedback();
     this.resizeCorrectHotspotFeedback();
@@ -445,7 +448,7 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
   /**
    * Resize image to fit parent width.
    */
-   ImageMultipleHotspotQuestion.prototype.resizeImage = function () {
+  ImageMultipleHotspotQuestion.prototype.resizeImage = function () {
     var self = this;
 
     // Check that question has been attached
@@ -465,7 +468,8 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
     if (parentWidth < naturalWidth) {
       // Scale image down
       neededHeight = parentWidth * imageRatio;
-    } else {
+    }
+    else {
       // Scale image to natural size
       this.$img.width(naturalWidth);
       neededHeight = naturalHeight;
@@ -482,7 +486,7 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
   /**
    * Re-position correct hotspot feedback.
    */
-   ImageMultipleHotspotQuestion.prototype.resizeCorrectHotspotFeedback = function () {
+  ImageMultipleHotspotQuestion.prototype.resizeCorrectHotspotFeedback = function () {
     // Check that hotspot is chosen
     if (this.correctHotspotFeedback.length === 0) {
       return;
@@ -504,7 +508,7 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
   /**
    * Re-position hotspot feedback.
    */
-   ImageMultipleHotspotQuestion.prototype.resizeHotspotFeedback = function () {
+  ImageMultipleHotspotQuestion.prototype.resizeHotspotFeedback = function () {
     // Check that hotspot is chosen
     if (!this.hotspotFeedback.hotspotChosen) {
       return;
