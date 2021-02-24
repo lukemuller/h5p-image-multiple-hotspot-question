@@ -146,6 +146,15 @@
             "placeholder": "You have already found this one!",
             "importance": "low",
             "optional": true
+          },
+          {
+            "name": "feedbackSeparator",
+            "type": "text",
+            "label": "Separate the correct item  to the total item",
+            "importance": "low",
+            "placeholder": "of",
+            "description": "Example: Correct 1 of 5",
+            "optional": true
           }
         ]
       }
