@@ -306,6 +306,9 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
     this.hotspotFeedback.pixelOffsetX = (this.hotspotFeedback.$element.width() / 2);
     this.hotspotFeedback.pixelOffsetY = (this.hotspotFeedback.$element.height() / 2);
 
+	//separator
+	this.separator = this.hotspotSettings.feedbackSeparator || 'of';
+
     // Position feedback
     this.resizeHotspotFeedback();
 
@@ -317,7 +320,7 @@ H5P.ImageMultipleHotspotQuestion = (function ($, Question) {
       this.correctHotspotFeedback.push(this.hotspotFeedback);
       if (hotspot && hotspot.userSettings.feedbackText) {
         if (this.params.imageMultipleHotspotQuestion.hotspotSettings.hotspotName) {
-          feedbackText = (this.params.imageMultipleHotspotQuestion.hotspotSettings.hotspotName ? hotspot.userSettings.feedbackText+' '+this.score+' of '+this.maxScore+' '+this.params.imageMultipleHotspotQuestion.hotspotSettings.hotspotName+'.' : hotspot.userSettings.feedbackText+' '+this.score+' of '+this.maxScore+'.');
+          feedbackText = (this.params.imageMultipleHotspotQuestion.hotspotSettings.hotspotName ? hotspot.userSettings.feedbackText+' '+this.score+' '+ this.separator +' '+this.maxScore+' '+this.params.imageMultipleHotspotQuestion.hotspotSettings.hotspotName+'.' : hotspot.userSettings.feedbackText+' '+this.score+' '+ this.separator +' '+this.maxScore+'.');
         }
       }
       this.hotspotFeedback.incorrect = false;
